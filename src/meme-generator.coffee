@@ -36,8 +36,6 @@
 # Author:
 #   skalnik
 
-require('dotenv').config()
-
 inspect = require('util').inspect
 
 module.exports = (robot) ->
@@ -187,7 +185,6 @@ memeResponder = (robot, meme) ->
 memeGenerator = (msg, generatorID, imageID, text0, text1, callback) ->
   username = process.env.HUBOT_MEMEGEN_USERNAME
   password = process.env.HUBOT_MEMEGEN_PASSWORD
-  preferredDimensions = process.env.HUBOT_MEMEGEN_DIMENSIONS
 
   unless username? and password?
     msg.send "MemeGenerator account isn't setup. Sign up at http://memegenerator.net"
@@ -226,11 +223,7 @@ memeGenerator = (msg, generatorID, imageID, text0, text1, callback) ->
         return
 
       msg.http(instanceURL).get() (err, res, body) ->
-        # Need to hit instanceURL so that image gets generated
-        if preferredDimensions?
-          callback "http://images.memegenerator.net/instances/#{preferredDimensions}/#{instanceID}.jpg"
-        else
-          callback "http://images.memegenerator.net/instances/#{instanceID}.jpg"
+        callback "http://images.memegenerator.net/instances/#{instanceID}.jpg"
 
 # khanify = (msg) ->
 #   msg = msg.toUpperCase()
