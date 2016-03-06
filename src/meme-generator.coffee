@@ -74,14 +74,14 @@ memeResponder = () -> (robot, meme) ->
 memeGenerator = (msg, generatorID, text0, text1, cb) ->
   username = process.env.HUBOT_MEMEGEN_USERNAME
   password = process.env.HUBOT_MEMEGEN_PASSWORD
-
-  request.get (url + objectToQueryString({
+  imgFlipUrl = url + objectToQueryString
     template_id: generatorID
     username: username
     password: password
     text0: text0
     text1: text1
-  })), (e, res, body) ->
+
+  request.get imgFlipUrl, (e, res, body) ->
     if e
       msg.reply err
       return
