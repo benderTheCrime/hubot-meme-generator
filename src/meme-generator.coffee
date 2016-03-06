@@ -68,6 +68,7 @@ module.exports = (robot) ->
 
 memeResponder = () -> (robot, meme) ->
   robot.respond meme.regex, (msg) ->
+    console.log 'calling meme generator'
     memeGenerator msg, meme.generatorID, msg.match[2], msg.match[3], (img) ->
       msg.send img
 
@@ -81,13 +82,19 @@ memeGenerator = (msg, generatorID, text0, text1, cb) ->
     text0: text0
     text1: text1
 
+  console.log imgFlipUrl
+
   request.get imgFlipUrl, (e, res, body) ->
+    console.log arguments
+
     if e
       msg.reply err
       return
 
     jsonBody = JSON.parse(body)
     success = jsonBody?.success
+
+    console.log jsonBody, success
 
     unless success
       msg.reply jsonBody
