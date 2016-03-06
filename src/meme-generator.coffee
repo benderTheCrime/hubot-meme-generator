@@ -75,13 +75,13 @@ memeGenerator = (msg, generatorID, text0, text1, cb) ->
   username = process.env.HUBOT_MEMEGEN_USERNAME
   password = process.env.HUBOT_MEMEGEN_PASSWORD
 
-  request.get url + objectToQueryString({
+  request.get (url + objectToQueryString({
     template_id: generatorID
     username: username
     password: password
     text0: text0
     text1: text1
-  }), (e, res, body) ->
+  })), (e, res, body) ->
     if e
       console.log err
       return
