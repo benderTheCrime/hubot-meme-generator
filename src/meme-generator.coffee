@@ -44,27 +44,7 @@ memes = [
   }
 ]
 
-module.exports = (robot) ->
-  robot.brain.data.memes = memes
-
-  memeResponder(robot, meme) for meme in robot.brain.data.memes
-
-  robot.respond /(memegen )?add meme \/(.+)\/i,(.+),(.+)/i, (msg) ->
-    meme =
-      regex: new RegExp(msg.match[2], "i")
-      generatorID: parseInt(msg.match[3])
-      imageID: parseInt(msg.match[4])
-
-    robot.brain.data.memes.push meme
-    memeResponder robot, meme
-
-  robot.respond /(memegen )?(IF .*), ((ARE|CAN|DO|DOES|HOW|IS|MAY|MIGHT|SHOULD|THEN|WHAT|WHEN|WHERE|WHICH|WHO|WHY|WILL|WON\'T|WOULD)[ \'N].*)/i, (msg) ->
-    memeGenerator msg, 17, 984, msg.match[2], msg.match[3] + (if msg.match[3].search(/\?$/)==(-1) then '?' else ''), (url) ->
-      msg.send url
-
-  robot.respond /(memegen )?((Oh|You) .*) ((Please|Tell) .*)/i, (msg) ->
-    memeGenerator msg, 542616, 2729805, msg.match[2], msg.match[4], (url) ->
-      msg.send url
+module.exports = (robot) -> memeResponder(robot, meme) for meme in memes
 
 memeResponder = () -> (robot, meme) ->
   robot.respond meme.regex, (msg) ->
