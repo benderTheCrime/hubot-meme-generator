@@ -71,7 +71,7 @@ memeResponder = (robot, meme) ->
     memeGenerator msg, meme.generatorID, msg.match[2], msg.match[3], (url) ->
       msg.send url
 
-memeGenerator = (msg, generatorID, text0, text1, callback) ->
+memeGenerator = (msg, generatorID, text0, text1) ->
   username = process.env.HUBOT_MEMEGEN_USERNAME
   password = process.env.HUBOT_MEMEGEN_PASSWORD
 
