@@ -40,111 +40,26 @@ inspect = require('util').inspect
 
 module.exports = (robot) ->
   robot.brain.data.memes = [
-    # {
-    #   regex: /(memegen )?(Y U NO) (.+)/i,
-    #   generatorID: 2,
-    #   imageID: 166088
-    # },
-    # {
-    #   regex: /(memegen )?(I DON'?T ALWAYS .*) (BUT WHEN I DO,? .*)/i,
-    #   generatorID: 74,
-    #   imageID: 2485
-    # },
-    # {
-    #   regex: /(memegen )?(.*)(O\s?RLY\??.*)/i,
-    #   generatorID: 920,
-    #   imageID: 117049
-    # },
     {
       regex: /(memegen )?(.*)(SUCCESS|NAILED IT.*)/i,
-      generatorID: 121,
-      imageID: 1031
-    },
-    # {
-    #   regex: /(memegen )?(.*) (ALL the .*)/i,
-    #   generatorID: 6013,
-    #   imageID: 1121885
-    # },
-    # {
-    #   regex: /(memegen )?(.*) (\w+\sTOO DAMN .*)/i,
-    #   generatorID: 998,
-    #   imageID: 203665
-    # },
-    {
-      regex: /(memegen )?(GOOD NEWS EVERYONE[,.!]?) (.*)/i,
-      generatorID: 1591,
-      imageID: 112464
-    },
+      generatorID: 61544
+    }
     {
       regex: /(memegen )?(NOT SURE IF .*) (OR .*)/i,
-      generatorID: 305,
-      imageID: 84688
-    },
+      generatorID: 61520
+    }
     {
       regex: /(memegen )?(YO DAWG .*) (SO .*)/i,
-      generatorID: 79,
-      imageID: 108785
-    },
-    # {
-    #   regex: /(memegen )?(ALL YOUR .*) (ARE BELONG TO US)/i,
-    #   generatorID: 349058,
-    #   imageID: 2079825
-    # },
-    # {
-    #   regex: /(memegen )?(.*) (FUCK YOU)/i,
-    #   generatorID: 1189472,
-    #   imageID: 5044147
-    # },
-    {
-      regex: /(memegen )?(.*) (You'?re gonna have a bad time)/i,
-      generatorID: 825296,
-      imageID: 3786537
-    },
+      generatorID: 101716
+    }
     {
       regex: /(memegen )?(one does not simply) (.*)/i,
-      generatorID: 274947,
-      imageID: 1865027
-    },
-    # {
-    #   regex: /(memegen )?(grumpy cat) (.*),(.*)/i,
-    #   generatorID: 1590955,
-    #   imageID: 6541210
-    # },
-    {
-      regex: /(memegen )?(it looks like you're|it looks like you) (.*)/i,
-      generatorID: 20469,
-      imageID: 1159769
-    },
+      generatorID: 61579
+    }
     {
       regex: /(memegen )?(AM I THE ONLY ONE AROUND HERE) (.*)/i,
-      generatorID: 953639,
-      imageID: 4240352
+      generatorID: 259680
     }
-    # {
-    #   regex: /(memegen)?(.*)(NOT IMPRESSED*)/i,
-    #   generatorID: 1420809,
-    #   imageID: 5883168
-    # },
-    # {
-    #   regex: /(memegen)?(PREPARE YOURSELF) (.*)/i,
-    #   generatorID: 414926,
-    #   imageID: 2295701
-    # },
-    # {
-    #   regex: /(memegen)?(WHAT IF I TOLD YOU) (.*)/i,
-    #   generatorID: 1118843,
-    #   imageID: 4796874
-    # },
-    # {
-    #   regex: /(memegen)?(.*) (BETTER DRINK MY OWN PISS)/i,
-    #   generatorID: 92,
-    #   imageID: 89714
-    # },
-    # {
-    #   regex: /(memegen)? ?INTERNET KID ?([^,]*),?(.*)/i,
-    #   generatorID: 1095654,
-    #   imageID: 4714007
-    # }
   ]
 
   memeResponder(robot, meme) for meme in robot.brain.data.memes
@@ -158,17 +73,6 @@ module.exports = (robot) ->
     robot.brain.data.memes.push meme
     memeResponder robot, meme
 
-  # robot.respond /(memegen )?k(?:ha|ah)nify (.*)/i, (msg) ->
-  #   if Math.random() > 0.5
-  #     # Kirk khan
-  #     memeGenerator msg, 6443, 1123022, "", khanify(msg.match[2]), (url) ->
-  #       msg.send url
-  #   else
-  #     # Spock khan
-  #     memeGenerator msg, 2103732, 8814557, "", khanify(msg.match[2]), (url) ->
-  #       msg.send url
-
-
   robot.respond /(memegen )?(IF .*), ((ARE|CAN|DO|DOES|HOW|IS|MAY|MIGHT|SHOULD|THEN|WHAT|WHEN|WHERE|WHICH|WHO|WHY|WILL|WON\'T|WOULD)[ \'N].*)/i, (msg) ->
     memeGenerator msg, 17, 984, msg.match[2], msg.match[3] + (if msg.match[3].search(/\?$/)==(-1) then '?' else ''), (url) ->
       msg.send url
@@ -179,56 +83,32 @@ module.exports = (robot) ->
 
 memeResponder = (robot, meme) ->
   robot.respond meme.regex, (msg) ->
-    memeGenerator msg, meme.generatorID, meme.imageID, msg.match[2], msg.match[3], (url) ->
+    memeGenerator msg, meme.generatorID, msg.match[2], msg.match[3], (url) ->
       msg.send url
 
 memeGenerator = (msg, generatorID, imageID, text0, text1, callback) ->
   username = process.env.HUBOT_MEMEGEN_USERNAME
   password = process.env.HUBOT_MEMEGEN_PASSWORD
 
-  unless username? and password?
-    msg.send "MemeGenerator account isn't setup. Sign up at http://memegenerator.net"
-    msg.send "Then ensure the HUBOT_MEMEGEN_USERNAME and HUBOT_MEMEGEN_PASSWORD environment variables are set"
-    return
-
-  msg.http('http://version1.api.memegenerator.net/Instance_Create')
+  msg.http('https://api.imgflip.com/caption_image')
     .query
-      username: username,
-      password: password,
-      languageCode: 'en',
-      generatorID: generatorID,
-      imageID: imageID,
+      template_id: generatorID
+      username: username
+      password: password
       text0: text0,
       text1: text1
     .get() (err, res, body) ->
-      if err
-        msg.reply "Ugh, I got an exception trying to contact memegenerator.net:", inspect(err)
-        return
+      return if err
 
       jsonBody = JSON.parse(body)
-      success = jsonBody.success
-      errorMessage = jsonBody.errorMessage
-      result = jsonBody.result
+      success = jsonBody?.success
 
-      if not success
-        msg.reply "Ugh, stupid request to memegenerator.net failed: \"#{errorMessage}.\" What does that even mean?"
+      return if not success
+
+      img = jsonBody.data?.url
+
+      unless img
+        msg.reply "Ugh, I got back weird results from imgflip.net. Expected an image URL, but couldn't find it in the result. Here's what I got:", inspect(jsonBody)
         return
 
-      instanceID = result?.instanceID
-      instanceURL = result?.instanceUrl
-      img = result?.instanceImageUrl
-
-      unless instanceID and instanceURL and img
-        msg.reply "Ugh, I got back weird results from memegenerator.net. Expected an image URL, but couldn't find it in the result. Here's what I got:", inspect(jsonBody)
-        return
-
-      msg.http(instanceURL).get() (err, res, body) ->
-        callback "http://images.memegenerator.net/instances/#{instanceID}.jpg"
-
-# khanify = (msg) ->
-#   msg = msg.toUpperCase()
-#   vowels = [ 'A', 'E', 'I', 'O', 'U' ]
-#   index = -1
-#   for v in vowels when msg.lastIndexOf(v) > index
-#     index = msg.lastIndexOf(v)
-#   "#{msg.slice 0, index}#{Array(10).join msg.charAt(index)}#{msg.slice index}!!!!!"
+      callback img
