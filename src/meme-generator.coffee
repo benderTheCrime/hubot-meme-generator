@@ -95,10 +95,12 @@ memeGenerator = (msg, generatorID, text0, text1, callback) ->
 
     img = jsonBody.data?.url
 
+    console.log img
+
     unless img
       msg.reply "Ugh, I got back weird results from imgflip.net. Expected an image URL, but couldn't find it in the result. Here's what I got:", inspect(jsonBody)
       return
 
     msg.reply img
 
-objectToQueryString = (obj) -> '?' + ("#{k}=#{v}&" for k, v of obj).join('')
+objectToQueryString = (obj) -> '?' + ("#{k}=#{v}&" for k, v of obj).join ''
