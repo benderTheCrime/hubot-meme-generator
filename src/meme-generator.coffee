@@ -19,6 +19,9 @@
 #   skalnik
 
 inspect = require('util').inspect
+request = require('request')
+
+url = 'https://api.imgflip.com/caption_image'
 
 module.exports = (robot) ->
   robot.brain.data.memes = [
@@ -68,33 +71,34 @@ memeResponder = (robot, meme) ->
     memeGenerator msg, meme.generatorID, msg.match[2], msg.match[3], (url) ->
       msg.send url
 
-memeGenerator = (msg, generatorID, imageID, text0, text1, callback) ->
+memeGenerator = (msg, generatorID, text0, text1, callback) ->
   username = process.env.HUBOT_MEMEGEN_USERNAME
   password = process.env.HUBOT_MEMEGEN_PASSWORD
 
-  msg.http('https://api.imgflip.com/caption_image')
-    .query
-      template_id: generatorID
-      username: username
-      password: password
-      text0: text0,
-      text1: text1
-    .get() (err, res, body) ->
-      if err
-        console.log err
-        return
+  request.get url + objectToQueryString({
+    template_id: generatorID
+    username: username
+    password: password
+    text0: text0
+    text1: text1
+  }), (e, res, body) ->
+    if e
+      console.log err
+      return
 
-      jsonBody = JSON.parse(body)
-      success = jsonBody?.success
+    jsonBody = JSON.parse(body)
+    success = jsonBody?.success
 
-      unless success
-        console.log jsonBody
-        return
+    unless success
+      console.log jsonBody
+      return
 
-      img = jsonBody.data?.url
+    img = jsonBody.data?.url
 
-      unless img
-        msg.reply "Ugh, I got back weird results from imgflip.net. Expected an image URL, but couldn't find it in the result. Here's what I got:", inspect(jsonBody)
-        return
+    unless img
+      msg.reply "Ugh, I got back weird results from imgflip.net. Expected an image URL, but couldn't find it in the result. Here's what I got:", inspect(jsonBody)
+      return
 
-      msg.reply img
+    msg.reply img
+
+objectToQueryString = (obj) -> '?' + ("#{k}=#{v}&" for k, v of obj).join('')

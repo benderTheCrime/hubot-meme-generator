@@ -1,7 +1,7 @@
 {
   "name": "hubot-meme-generator",
   "description": "A modified version of the hubot script meme generator: https://github.com/github/hubot-scripts/blob/master/src/scripts/meme_generator.coffee",
-  "version": "1.1.1",
+  "version": "1.1.2",
   "author": "Joe Groseclose <@benderTheCrime>",
   "license": "MIT",
   "keywords": "hubot, hubot-scripts",
@@ -12,7 +12,9 @@
   "bugs": {
     "url": "https://github.com/benderTheCrime/hubot-meme-generator/issues"
   },
-  "dependencies": {},
+  "dependencies": {
+    "request": "^2.69.0"
+  },
   "peerDependencies": {
     "hubot": "2.x"
   },
