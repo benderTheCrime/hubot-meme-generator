@@ -1,6 +1,8 @@
 # hubot-meme-generator
 
-A hubot script that does the things
+A modified version of the hubot script meme generator: https://github.com/github/hubot-scripts/blob/master/src/scripts/meme_generator.coffee.
+This package is entirely adapted from the script originally written by [skalnik](https://github.com/skalnik)
+and modified to only support a subset of the memes (instead of ALL THE MEMES!!). :penguin:
 
 See [`src/meme-generator.coffee`](src/meme-generator.coffee) for full documentation.
 

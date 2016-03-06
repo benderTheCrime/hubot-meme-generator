@@ -12,8 +12,7 @@
   "bugs": {
     "url": "https://github.com/benderTheCrime/hubot-meme-generator/issues"
   },
-  "dependencies": {
-  },
+  "dependencies": {},
   "peerDependencies": {
     "hubot": "2.x"
   },
@@ -31,9 +30,7 @@
     "sinon": "^1.13.0",
     "sinon-chai": "^2.7.0"
   },
-
   "main": "index.coffee",
-
   "scripts": {
     "test": "grunt test"
   }

@@ -36,6 +36,7 @@
 # Author:
 #   skalnik
 
+require('dotenv').config()
 
 inspect = require('util').inspect
 
