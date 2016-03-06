@@ -83,19 +83,17 @@ memeGenerator = (msg, generatorID, text0, text1, cb) ->
     text1: text1
   })), (e, res, body) ->
     if e
-      console.log err
+      msg.reply err
       return
 
     jsonBody = JSON.parse(body)
     success = jsonBody?.success
 
     unless success
-      console.log jsonBody
+      msg.reply jsonBody
       return
 
     img = jsonBody.data?.url
-
-    console.log img
 
     unless img
       msg.reply "Ugh, I got back weird results from imgflip.net. Expected an image URL, but couldn't find it in the result. Here's what I got:", inspect(jsonBody)
