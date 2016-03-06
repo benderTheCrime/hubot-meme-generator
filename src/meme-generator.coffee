@@ -19,33 +19,33 @@
 #   skalnik
 
 inspect = require('util').inspect
-request = require('request')
-
+request = require 'request'
 url = 'https://api.imgflip.com/caption_image'
+memes = [
+  {
+    regex: /(memegen )?(.*)(SUCCESS|NAILED IT.*)/i,
+    generatorID: 61544
+  }
+  {
+    regex: /(memegen )?(NOT SURE IF .*) (OR .*)/i,
+    generatorID: 61520
+  }
+  {
+    regex: /(memegen )?(YO DAWG .*) (SO .*)/i,
+    generatorID: 101716
+  }
+  {
+    regex: /(memegen )?(one does not simply) (.*)/i,
+    generatorID: 61579
+  }
+  {
+    regex: /(memegen )?(AM I THE ONLY ONE AROUND HERE) (.*)/i,
+    generatorID: 259680
+  }
+]
 
 module.exports = (robot) ->
-  robot.brain.data.memes = [
-    {
-      regex: /(memegen )?(.*)(SUCCESS|NAILED IT.*)/i,
-      generatorID: 61544
-    }
-    {
-      regex: /(memegen )?(NOT SURE IF .*) (OR .*)/i,
-      generatorID: 61520
-    }
-    {
-      regex: /(memegen )?(YO DAWG .*) (SO .*)/i,
-      generatorID: 101716
-    }
-    {
-      regex: /(memegen )?(one does not simply) (.*)/i,
-      generatorID: 61579
-    }
-    {
-      regex: /(memegen )?(AM I THE ONLY ONE AROUND HERE) (.*)/i,
-      generatorID: 259680
-    }
-  ]
+  robot.brain.data.memes = memes
 
   memeResponder(robot, meme) for meme in robot.brain.data.memes
 
@@ -66,12 +66,12 @@ module.exports = (robot) ->
     memeGenerator msg, 542616, 2729805, msg.match[2], msg.match[4], (url) ->
       msg.send url
 
-memeResponder = (robot, meme) ->
+memeResponder = () -> (robot, meme) ->
   robot.respond meme.regex, (msg) ->
-    memeGenerator msg, meme.generatorID, msg.match[2], msg.match[3], (url) ->
-      msg.send url
+    memeGenerator msg, meme.generatorID, msg.match[2], msg.match[3], (img) ->
+      msg.send img
 
-memeGenerator = (msg, generatorID, text0, text1) ->
+memeGenerator = (msg, generatorID, text0, text1, cb) ->
   username = process.env.HUBOT_MEMEGEN_USERNAME
   password = process.env.HUBOT_MEMEGEN_PASSWORD
 
@@ -101,6 +101,6 @@ memeGenerator = (msg, generatorID, text0, text1) ->
       msg.reply "Ugh, I got back weird results from imgflip.net. Expected an image URL, but couldn't find it in the result. Here's what I got:", inspect(jsonBody)
       return
 
-    msg.reply img
+    cb img
 
 objectToQueryString = (obj) -> '?' + ("#{k}=#{v}&" for k, v of obj).join ''
