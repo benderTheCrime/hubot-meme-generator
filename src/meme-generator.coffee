@@ -23,36 +23,31 @@ request = require 'request'
 url = 'https://api.imgflip.com/caption_image'
 memes = [
   {
-    regex: /(memegen )?(.*)(SUCCESS|NAILED IT.*)/i,
+    regex: /(memegen )?(.*)(SUCCESS|NAILED IT.*)/i
     generatorID: 61544
   }
   {
-    regex: /(memegen )?(NOT SURE IF .*) (OR .*)/i,
+    regex: /(memegen )?(NOT SURE IF .*) (OR .*)/i
     generatorID: 61520
   }
   {
-    regex: /(memegen )?(YO DAWG .*) (SO .*)/i,
+    regex: /(memegen )?(YO DAWG .*) (SO .*)/i
     generatorID: 101716
   }
   {
-    regex: /(memegen )?(one does not simply) (.*)/i,
+    regex: /(memegen )?(one does not simply) (.*)/i
     generatorID: 61579
   }
   {
-    regex: /(memegen )?(AM I THE ONLY ONE AROUND HERE) (.*)/i,
+    regex: /(memegen )?(AM I THE ONLY ONE AROUND HERE) (.*)/i
     generatorID: 259680
   }
 ]
 
-module.exports = (robot) ->
-  console.log 'in'
-  for meme in memes
-    console.log meme
-    memeResponder robot, meme
+module.exports = (robot) -> memeResponder(robot, meme) for meme in memes
 
-memeResponder = () -> (robot, meme) ->
+memeResponder = (robot, meme) ->
   robot.respond meme.regex, (msg) ->
-    console.log 'calling meme generator'
     memeGenerator msg, meme.generatorID, msg.match[2], msg.match[3], (img) ->
       msg.send img
 
@@ -66,23 +61,13 @@ memeGenerator = (msg, generatorID, text0, text1, cb) ->
     text0: text0
     text1: text1
 
-  console.log imgFlipUrl
-
   request.get imgFlipUrl, (e, res, body) ->
-    console.log arguments
-
-    if e
-      msg.reply err
-      return
+    return if e
 
     jsonBody = JSON.parse(body)
     success = jsonBody?.success
 
-    console.log jsonBody, success
-
-    unless success
-      msg.reply jsonBody
-      return
+    return unless success
 
     img = jsonBody.data?.url
 
@@ -92,4 +77,6 @@ memeGenerator = (msg, generatorID, text0, text1, cb) ->
 
     cb img
 
-objectToQueryString = (obj) -> '?' + ("#{k}=#{v}&" for k, v of obj).join ''
+objectToQueryString = (obj) -> '?' + (
+  "#{k}=#{encodeURIComponent(v)}&" for k, v of obj
+).join ''
