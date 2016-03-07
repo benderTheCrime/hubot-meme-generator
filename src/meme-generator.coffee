@@ -44,7 +44,11 @@ memes = [
   }
 ]
 
-module.exports = (robot) -> memeResponder(robot, meme) for meme in memes
+module.exports = (robot) ->
+  console.log 'in'
+  for meme in memes
+    console.log meme
+    memeResponder robot, meme
 
 memeResponder = () -> (robot, meme) ->
   robot.respond meme.regex, (msg) ->
