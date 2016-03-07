@@ -44,7 +44,12 @@ memes = [
   }
 ]
 
-module.exports = (robot) -> memeResponder(robot, meme) for meme in memes
+module.exports = (robot) ->
+  memeResponder(robot, meme) for meme in memes
+
+  robot.respond /(memegen )?(IF .*), ((ARE|CAN|DO|DOES|HOW|IS|MAY|MIGHT|SHOULD|THEN|WHAT|WHEN|WHERE|WHICH|WHO|WHY|WILL|WON\'T|WOULD)[ \'N].*)/i, (msg) ->
+    memeGenerator msg, 61516, msg.match[2], msg.match[3] + (if msg.match[3].search(/\?$/)==(-1) then '?' else ''), (img) ->
+      msg.send img
 
 memeResponder = (robot, meme) ->
   robot.respond meme.regex, (msg) ->
